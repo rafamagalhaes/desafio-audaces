@@ -7,7 +7,7 @@ env:
 
 jobs:
   build-and-test:
-    uses: ./.github/workflows/neoway-app.yml
+    uses: ./.github/workflows/audaces-app.yml
     
   deploy:
 
