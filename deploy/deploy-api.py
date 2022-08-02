@@ -29,7 +29,7 @@ def list_servers():
         for tags in instance.tags:
             if tags["Key"] == 'Name':
                 instancename = tags["Value"]
-        if "neoway_ec2" in instancename:
+        if "audaces_ec2" in instancename:
             app = instance.public_ip_address
 
     return app
@@ -49,7 +49,7 @@ def install_app():
         install_docker = "sudo bash get-docker.sh"
         net_connect.send_command(download_docker)
         net_connect.send_command(install_docker)
-        installapp = "sudo docker run --name neoway-app -p 5000:5000 -d rafapmagalhaes/neoway:latest"
+        installapp = "sudo docker run --name audaces-app -p 5000:5000 -d rafapmagalhaes/audaces:latest"
         net_connect.send_command(installapp)
 
 def main():
