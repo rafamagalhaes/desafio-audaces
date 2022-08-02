@@ -1,0 +1,60 @@
+name: 'Build App'
+
+on: workflow_call
+    
+env:
+  workdir: ./app
+
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Test with pytest
+      run: |
+        pytest tests
+      working-directory: ${{ env.workdir }}    
+
+  build:
+
+    needs: [test]
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setting environment variables..
+      run: |
+        bash pass.sh
+      working-directory: ${{ env.workdir }}
+
+    - name: Build the Docker Neoway App
+      run: docker build . --file Dockerfile --tag rafapmagalhaes/audaces:latest
+      working-directory: ${{ env.workdir }}
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: rafapmagalhaes
+        password: ${{ env.PASSWORD }}
+      env:
+        PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    - name: Push the Docker Audaces App to Registry
+      run: docker push rafapmagalhaes/neoway:latest
+      working-directory: ${{ env.workdir }}
