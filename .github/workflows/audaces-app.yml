@@ -38,12 +38,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Setting environment variables..
-      run: |
-        bash pass.sh
-      working-directory: ${{ env.workdir }}
+    # - name: Setting environment variables..
+    #   run: |
+    #     bash pass.sh
+    #   working-directory: ${{ env.workdir }}
 
-    - name: Build the Docker Neoway App
+    - name: Build the Docker Audaces App
       run: docker build . --file Dockerfile --tag rafapmagalhaes/audaces:latest
       working-directory: ${{ env.workdir }}
 
